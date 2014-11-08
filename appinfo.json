@@ -1,15 +1,14 @@
 {
     "appKeys": {
         "league_id": 1,
-        "name": 7,
-        "players": 9,
-        "score": 8,
+        "request_type": 2,
         "team1_name": 3,
+        "team1_players": 7,
         "team1_score": 5,
         "team2_name": 4,
+        "team2_players": 8,
         "team2_score": 6,
-        "team_id": 0,
-        "window": 2
+        "team_id": 0
     },
     "capabilities": [
         ""
