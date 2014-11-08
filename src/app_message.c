@@ -6,19 +6,19 @@
 
 static char* TEAM_ID = "1095147";
 static char* LEAGUE_ID = "158259";
-	
+
 // Key values for AppMessage Dictionary
 enum {
-	FANTASY_KEY_TEAM_ID = 0x0,	
-	FANTASY_KEY_LEAGUE_ID = 0x1,
-	FANTASY_KEY_WINDOW = 0x2,
-	FANTASY_KEY_TEAM1_NAME = 0x3,
-	FANTASY_KEY_TEAM2_NAME = 0x4,
-	FANTASY_KEY_TEAM1_SCORE = 0x5,
-	FANTASY_KEY_TEAM2_SCORE = 0x6,
-	FANTASY_KEY_NAME = 0x7,
-	FANTASY_KEY_SCORE = 0x8,
-	FANTASY_KEY_PLAYERS = 0x9
+  FANTASY_KEY_TEAM_ID = 0x0,	
+  FANTASY_KEY_LEAGUE_ID = 0x1,
+  FANTASY_KEY_WINDOW = 0x2,
+  FANTASY_KEY_TEAM1_NAME = 0x3,
+  FANTASY_KEY_TEAM2_NAME = 0x4,
+  FANTASY_KEY_TEAM1_SCORE = 0x5,
+  FANTASY_KEY_TEAM2_SCORE = 0x6,
+  FANTASY_KEY_NAME = 0x7,
+  FANTASY_KEY_SCORE = 0x8,
+  FANTASY_KEY_PLAYERS = 0x9
 };
 
 static Window *score_window;
@@ -32,8 +32,8 @@ static TextLayer *team2_score_layer;
 
 // Write message to buffer & send
 void request_data(uint8_t view){
-	DictionaryIterator *iter;
-	
+  DictionaryIterator *iter;
+  
   APP_LOG(APP_LOG_LEVEL_DEBUG, "Sending over team_id = %s", TEAM_ID);
   app_message_outbox_begin(&iter);
   dict_write_cstring(iter, FANTASY_KEY_TEAM_ID, TEAM_ID);
@@ -63,9 +63,9 @@ static void update_score_window_data(DictionaryIterator *dict) {
 static void in_received_handler(DictionaryIterator *dict, void *context) {
   APP_LOG(APP_LOG_LEVEL_DEBUG, "Received message from JS");
   
-	Tuple *tuple = dict_find(dict, FANTASY_KEY_WINDOW);
+  Tuple *tuple = dict_find(dict, FANTASY_KEY_WINDOW);
   if(!tuple) {
-    	APP_LOG(APP_LOG_LEVEL_DEBUG, "No window key found, skipping data");
+      APP_LOG(APP_LOG_LEVEL_DEBUG, "No window key found, skipping data");
       return;
   }
   switch(tuple->value->uint8) {
@@ -153,31 +153,26 @@ static WindowHandlers score_window_handlers = {
 };
 
 void init(void) {
-	// Register AppMessage handlers
-	app_message_register_inbox_received(in_received_handler); 
-	app_message_register_inbox_dropped(in_dropped_handler); 
-	app_message_register_outbox_failed(out_failed_handler);
-	app_message_open(app_message_inbox_size_maximum(), app_message_outbox_size_maximum());
+  // Register AppMessage handlers
+  app_message_register_inbox_received(in_received_handler); 
+  app_message_register_inbox_dropped(in_dropped_handler); 
+  app_message_register_outbox_failed(out_failed_handler);
+  app_message_open(app_message_inbox_size_maximum(), app_message_outbox_size_maximum());
   
   score_window = window_create();
   window_set_window_handlers(score_window, score_window_handlers);
-	window_stack_push(score_window, true);
-
-//   psleep(2000);
-// 	request_data(TEAM1_WINDOW);
-//   psleep(2000);
-// 	request_data(TEAM2_WINDOW);
+  window_stack_push(score_window, true);
 }
 
 void deinit(void) {
-	app_message_deregister_callbacks();
-	window_destroy(score_window);
+  app_message_deregister_callbacks();
+  window_destroy(score_window);
 //   window_destroy(team1_window);
 //   window_destroy(team2_window);
 }
 
 int main( void ) {
-	init();
-	app_event_loop();
-	deinit();
+  init();
+  app_event_loop();
+  deinit();
 }

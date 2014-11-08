@@ -24,14 +24,33 @@ function fetchScoreView(service, leagueId, teamId) {
   fetchCurrentMatchup(service, leagueId, teamId, function(response){
     var pebble_msg = {
       "window":SCORE_WINDOW,
-      "team1_name"  : response.team1.team_name,
-      "team1_score" : cleanScore(response.team1.score),
-      "team2_name"  : response.team2.team_name,
-      "team2_score" : cleanScore(response.team2.score)
+      "team1_name"  : getTeam(response, teamId, 1).team_name,
+      "team1_score" : cleanScore(getTeam(response, teamId, 1).score),
+      "team2_name"  : getTeam(response, teamId, 2).team_name,
+      "team2_score" : cleanScore(getTeam(response, teamId, 2).score)
     };
     console.log("Sending score data to pebble: " + JSON.stringify(pebble_msg));
     Pebble.sendAppMessage(pebble_msg); 
   });
+}
+
+function getTeam(response, teamId, teamIdx) {
+  if(response.team1.team_id === teamId) {
+    if(teamIdx == 1) {
+      return response.team1; 
+    } else if (teamIdx == 2) {
+      return response.team2; 
+    }
+  }
+  else {
+    if(teamIdx == 1) {
+      return response.team2; 
+    } else if (teamIdx == 2) {
+      return response.team1; 
+    }
+  }
+  console.log("Couldnt find correct team");
+  return response["team" + teamIdx];
 }
 
 function cleanScore(score) {
